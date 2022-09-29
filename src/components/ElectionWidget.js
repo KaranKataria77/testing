@@ -2,6 +2,8 @@
 /* eslint-disable react/jsx-no-target-blank */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from "react";
+import Glide from "@glidejs/glide";
+import "@glidejs/glide/dist/css/glide.core.css";
 // import GlobalContext from "context";
 // import SiteAd from "widgets/Common/Responsive/SiteAd";
 import fetchUtility from "../includes/fetchUtility";
@@ -9,61 +11,64 @@ import fetchUtility from "../includes/fetchUtility";
 // import getConfig from "next/config";
 import { objectToArray } from "../includes/article.helper";
 import { party_color_code } from "../includes/party_color_code";
+import Slider from "./Slider";
+import CandDetailSlider from "./CandDetailSlider";
 
 const ElectionHomeWidget = (props) => {
-//   const { publicRuntimeConfig } = getConfig();
-let publicRuntimeConfig = {
-    siteEnv:"beta",
-    mainUrlParam:"?new_framework=publickeytrue"
-}
+  //   const { publicRuntimeConfig } = getConfig();
+  let publicRuntimeConfig = {
+    siteEnv: "beta",
+    mainUrlParam: "?new_framework=publickeytrue",
+  };
   const [allianceData, setAllianceData] = useState();
   const [stateNames, setStateNames] = useState();
   const [tallyType, setTallyType] = useState("alliance");
   const [displayName, setDisplayName] = useState("display_name");
+  const [candDetail, setCandDetail] = useState([]);
   console.log("publicRuntimeConfig", publicRuntimeConfig.siteEnv);
-//   let { switch_key, news_type, pageCommonProps, bigStoryData } =
-//     useContext(GlobalContext);
+  //   let { switch_key, news_type, pageCommonProps, bigStoryData } =
+  //     useContext(GlobalContext);
 
-// declaring static news type
-let news_type = "en"
-  let { counting_day_widgets_data={} } = props;
-//   let {
-//     countingDaySwitcherData: {
-//       site_switcher_widget_assembly_election: { counting_poll },
-//     },
-//     sponsorDataForWidgets,
-//   } = pageCommonProps;
+  // declaring static news type
+  let news_type = "en";
+  let { counting_day_widgets_data = {} } = props;
+  //   let {
+  //     countingDaySwitcherData: {
+  //       site_switcher_widget_assembly_election: { counting_poll },
+  //     },
+  //     sponsorDataForWidgets,
+  //   } = pageCommonProps;
 
   let sponsorDataForWidgetsAnalytic = "";
-//   if (
-//     sponsorDataForWidgets != undefined &&
-//     Object.keys(sponsorDataForWidgets).length !== 0
-//   ) {
-//     sponsorDataForWidgetsAnalytic = Object.values(
-//       sponsorDataForWidgets["analytics-center"]
-//     );
-//   }
+  //   if (
+  //     sponsorDataForWidgets != undefined &&
+  //     Object.keys(sponsorDataForWidgets).length !== 0
+  //   ) {
+  //     sponsorDataForWidgetsAnalytic = Object.values(
+  //       sponsorDataForWidgets["analytics-center"]
+  //     );
+  //   }
 
-//   let widgetStatus = counting_poll?.status?.counting_live_flag;
+  //   let widgetStatus = counting_poll?.status?.counting_live_flag;
 
-// declaring static status for testing
-let widgetStatus = "1"
+  // declaring static status for testing
+  let widgetStatus = "1";
 
-//   if (publicRuntimeConfig.siteEnv == "stg") {
-//     widgetStatus = counting_poll?.status?.counting_stg_flag;
-//   } else if (publicRuntimeConfig.siteEnv == "beta") {
-//     widgetStatus = counting_poll?.status?.counting_beta_flag;
-//   }
+  //   if (publicRuntimeConfig.siteEnv == "stg") {
+  //     widgetStatus = counting_poll?.status?.counting_stg_flag;
+  //   } else if (publicRuntimeConfig.siteEnv == "beta") {
+  //     widgetStatus = counting_poll?.status?.counting_beta_flag;
+  //   }
 
-//   let countingDayAdFlag = counting_poll.maintally_home_page_sponsor_switcher;
-//   let countingDayMicrositeFlag = counting_poll.counting_tally_microsite_flag;
+  //   let countingDayAdFlag = counting_poll.maintally_home_page_sponsor_switcher;
+  //   let countingDayMicrositeFlag = counting_poll.counting_tally_microsite_flag;
 
-// declaring static status for testing
-let countingDayMicrositeFlag = "1"
+  // declaring static status for testing
+  let countingDayMicrositeFlag = "1";
 
-//   let bigStoryUrl = bigStoryData[0]?.custom_url;
-//   let bigStoryTitle = bigStoryData[0]?.article_headline_ranking;
-//   let bigStoryTxt = bigStoryData[0]?.custom_field || "Live Blog";
+  //   let bigStoryUrl = bigStoryData[0]?.custom_url;
+  //   let bigStoryTitle = bigStoryData[0]?.article_headline_ranking;
+  //   let bigStoryTxt = bigStoryData[0]?.custom_field || "Live Blog";
   let sponserAd =
       "NW18_MAR_Desktop/NW18_MAR_ELECTION/NW18_MAR_ELECTION_AL/NW18_MAR_ELECT_AL_ROS_ATF_LOGO",
     partyTallyLang = "ਪਾਰਟੀ ਟੈਲੀ",
@@ -89,19 +94,52 @@ let countingDayMicrositeFlag = "1"
     setDisplayName("display_name");
     setAllianceData(objectToArray(data));
     setStateNames(Object.keys(data));
-    console.log("data....... ", objectToArray(data));
+    let candUrl =
+      "https://election.nw18.com/electiondata/electionjson/assembly_election_2022/live/etv/cons_list_with_status.json";
+    let candData = await fetchUtility(candUrl, []);
+    setCandDetail(Object.values(candData));
+    // console.log("data....... ", Object.values(candData));
   }
 
+  let sliderConfiguration = {
+    type: "slider",
+    autoplay: 2000,
+    perView: 8,
+    rewind: false,
+    slidesToScroll: 1,
+    breakpoints: {
+      600: {
+        perView: 1.5,
+      },
+    },
+  };
+
+  // const slider = new Glide('.brcountday-contslider', sliderConfiguration);
+
   useEffect(() => {
-    console.log("useEffect is running")
+    console.log("useEffect is running");
     let script = document.createElement("script");
     script.type = "text/javascript";
     script.src =
       "https://images.news18.com/static_news18/js/revamp/glide.min.js";
     document.head.appendChild(script);
-    apiCall();
-    //
 
+    apiCall();
+    setTimeout(() => {
+      new Glide(".brcountday-contslider", {
+        type: "carousel",
+        autoplay: 2000,
+        perView: 8,
+        // rewind: false,
+        // slidesToScroll: 1,
+        // breakpoints: {
+        //   600: {
+        //     perView: 1.5,
+        //   },
+        // },
+      }).mount();
+    }, 2000);
+    //
     // var acrossScript = document.createElement('script');
     // acrossScript.src = "https://images.news18.com/ibnkhabar/uploads/assets/event/common/js/assembly-election-2022-main-desktop.js";
     // acrossScript.defer =  true;
@@ -111,9 +149,10 @@ let countingDayMicrositeFlag = "1"
     //   apiCall();
     // }, 5000);
   }, []);
+
   return (
     <>
-    {console.log("render is running")}
+      {console.log("render is running")}
       <link
         rel="stylesheet"
         type="text/css"
@@ -134,7 +173,71 @@ let countingDayMicrositeFlag = "1"
                   sizes={[[1244, 60]]}
                 />
               ) : null} */}
-
+              <Slider />
+              {/* <div class="name">
+                <div class="glide__arrows" data-glide-el="controls">
+                  <button
+                    class="glide__arrow glide__arrow--left"
+                    data-glide-dir="<"
+                  >
+                    Prev
+                  </button>
+                </div>
+                <div class="glide__track" data-glide-el="track">
+                  <ul class="glide__slides">
+                    {candDetail &&
+                    candDetail !== undefined &&
+                    candDetail.length > 0
+                      ? candDetail.map((data, index) => (
+                          <li
+                            key={index}
+                            className="glide__slide--clone"
+                            // className="glide__slide"
+                            style={{
+                              width: "130px",
+                              background: "#f97d09",
+                              height: "83px",
+                              borderRadius: "6px",
+                            }}
+                            // className="skelAnimation"
+                          >
+                            <a>
+                              <span className="const-cname">
+                                {data && data !== undefined ? data.cname : ""}
+                                <p className="state_abbr">UP</p>
+                              </span>
+                              <span
+                                className="party_status"
+                                style={{
+                                  backgroundColor: party_color_code[data.ABBR],
+                                }}
+                              >
+                                <b>
+                                  {data && data !== undefined ? data.ABBR : ""}
+                                </b>
+                                <em>WINS</em>
+                              </span>
+                              <span className="last-winner-party">
+                                2017 :{" "}
+                                {data && data !== undefined
+                                  ? data.WINNER_2017
+                                  : ""}
+                              </span>
+                            </a>
+                          </li>
+                        ))
+                      : null}
+                  </ul>
+                </div>
+                <div class="glide__arrows" data-glide-el="controls">
+                  <button
+                    class="glide__arrow glide__arrow--right"
+                    data-glide-dir=">"
+                  >
+                    Next
+                  </button>
+                </div>
+              </div> */}
               {/* <!---Result tally component start--> */}
               <div className="widgetTallywrapper">
                 <div className="panelLeft">
@@ -148,13 +251,11 @@ let countingDayMicrositeFlag = "1"
                         target="_blank"
                         title="live tv"
                       >
-                        {console.log("checking ... ",counting_day_widgets_data?.live_tv
-                            ?.display_title_label)}
-                        {/* {ReactHtmlParser(
-                          counting_day_widgets_data?.live_tv
-                            ?.display_title_label || ""
-                        )} */}
-                        Live TV
+                        Watch
+                        <div className="boldTxt">
+                          Live Now
+                          <span>on</span>
+                        </div>
                       </a>
                       <div className="nhlivetv">
                         <a
@@ -790,7 +891,7 @@ let countingDayMicrositeFlag = "1"
               </div>
               {/* <!---Result tally end--> */}
               {/* <!-- candidates component starts--> */}
-
+              <CandDetailSlider />
               {/* <!-- candidates slider component end --> */}
             </div>
           </div>
