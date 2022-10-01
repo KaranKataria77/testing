@@ -13,6 +13,7 @@ import { objectToArray } from "../includes/article.helper";
 import { party_color_code } from "../includes/party_color_code";
 import Slider from "./Slider";
 import CandDetailSlider from "./CandDetailSlider";
+import AnalyticsMap from "./AnalyticsMap";
 
 const ElectionHomeWidget = (props) => {
   //   const { publicRuntimeConfig } = getConfig();
@@ -25,7 +26,7 @@ const ElectionHomeWidget = (props) => {
   const [tallyType, setTallyType] = useState("alliance");
   const [displayName, setDisplayName] = useState("display_name");
   const [candDetail, setCandDetail] = useState([]);
-  console.log("publicRuntimeConfig", publicRuntimeConfig.siteEnv);
+  // console.log("publicRuntimeConfig", publicRuntimeConfig.siteEnv);
   //   let { switch_key, news_type, pageCommonProps, bigStoryData } =
   //     useContext(GlobalContext);
 
@@ -117,28 +118,13 @@ const ElectionHomeWidget = (props) => {
   // const slider = new Glide('.brcountday-contslider', sliderConfiguration);
 
   useEffect(() => {
-    console.log("useEffect is running");
+    console.log("render is running inside useEffect");
     let script = document.createElement("script");
     script.type = "text/javascript";
     script.src =
       "https://images.news18.com/static_news18/js/revamp/glide.min.js";
-    document.head.appendChild(script);
-
+    document.head.appendChild(script)
     apiCall();
-    setTimeout(() => {
-      new Glide(".brcountday-contslider", {
-        type: "carousel",
-        autoplay: 2000,
-        perView: 8,
-        // rewind: false,
-        // slidesToScroll: 1,
-        // breakpoints: {
-        //   600: {
-        //     perView: 1.5,
-        //   },
-        // },
-      }).mount();
-    }, 2000);
     //
     // var acrossScript = document.createElement('script');
     // acrossScript.src = "https://images.news18.com/ibnkhabar/uploads/assets/event/common/js/assembly-election-2022-main-desktop.js";
@@ -470,7 +456,7 @@ const ElectionHomeWidget = (props) => {
                     </figure>
                   </div>
                   {/* <!-- amp widget start --> */}
-
+                  <AnalyticsMap />
                   {/* <!-- amp widget end--> */}
 
                   <a
